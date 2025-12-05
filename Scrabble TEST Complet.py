@@ -212,7 +212,7 @@ def completer_main(main, sac): # Question 9
     return main
 
 
-def echanger (jetons, main, sac): # Question 10
+def echanger(jetons, main, sac): # Question 10
     R=True
     # on enleve les jetons de la main 
     jetons_retires = []
