@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 """
 -----------------------------------------------------------------------------
-i11_XXXX_YYYY_projet.py : CR projet « srabble », groupe ZZZ
+i11_HACKERT_YYYY_projet.py : CR projet « srabble », groupe ZZZ
 
-XXXX <prenom.nom@etu-univ-grenoble-alpes.fr>
+HACKERT <vadim.hackert@etu-univ-grenoble-alpes.fr>
 YYYY <prenom.nom@univ-grenoble-alpes.fr>
 -----------------------------------------------------------------------------
 """
@@ -742,6 +742,7 @@ while len(sac)>0:
 
 # Fin de partie le sac est vide
 detecte_fin_partie(sac, joueurs, dico)
+
 
 
 
