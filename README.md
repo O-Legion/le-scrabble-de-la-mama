@@ -3,10 +3,10 @@ Projet Scrabble inf
 
 # Partie 2
 
-# init_pioche_aléa() 
+#init_pioche_aléa() 
 est la première version de la fonction qui gère la construction aléatoire de la pioche du scrabble.
 
-# piocher(x,sac)
+#piocher(x,sac)
 prmet au joueur de piocher un nombre x de jetons dans le sac
 
 #completer_main(main, sac)
