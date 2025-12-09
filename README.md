@@ -26,7 +26,7 @@ crée une liste vide puis regarde dans motsfr et ajoute a la liste créer les mo
 #select_mot_longueur(motsfr,lgr)
 crée une liste vide puis regarde dans motsfr et ajoute a la liste créer les mots de longueur lgr.
 
-# mot_jouable(mot,ll,lp)
+#mot_jouable(mot,ll,lp)
 renvoie un booléen indiquant si oui le mot est jouable ou non en fonction de la main ll et des lettres presente lp.
 
 #mot_jouables(motsfr,ll,lp)
