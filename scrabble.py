@@ -183,7 +183,7 @@ def init_pioche_alea(): # Question 7
     # on remplie aléatoirement jusqu'à 100 jetons
     
     for i in range(0,72):
-        x=random.randint(0,25)
+        x=random.randint(0,26)
         P.append(l1[x])
     return P
 sac2=init_pioche_alea() # Question 8
@@ -745,6 +745,7 @@ while len(sac)>0:
 
 # Fin de partie le sac est vide
 detecte_fin_partie(sac, joueurs, dico)
+
 
 
 
