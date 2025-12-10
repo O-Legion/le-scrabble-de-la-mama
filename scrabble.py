@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 -----------------------------------------------------------------------------
-i11_HACKERT_YYYY_projet.py : CR projet « srabble », groupe ZZZ
+i11_XXXX_YYYY_projet.py : CR projet « srabble », groupe ZZZ
 
 HACKERT <vadim.hackert@etu-univ-grenoble-alpes.fr>
 NGOMA <bruno.ngoma@univ-grenoble-alpes.fr>
@@ -325,11 +325,12 @@ def mot_jouables(motsfr,ll,lp):
 
 
 def init_pioche(dico):
+# on crée une liste ou on ajoute la lettre*occurence    
     l=[]
     for i in dico:
         x=dico[i]['occ']
         l.append(x*i)
-
+# on crée une deuxième liste pour aoir le format de pioche demandé 
     lj=[]
     for i in l:
         for x in i:
@@ -745,6 +746,7 @@ while len(sac)>0:
 
 # Fin de partie le sac est vide
 detecte_fin_partie(sac, joueurs, dico)
+
 
 
 
