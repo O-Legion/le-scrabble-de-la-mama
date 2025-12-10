@@ -104,66 +104,73 @@ def init_jetons(): # Question 2
     return j
 
 
-def affiche_jetons(j, bonus_plateau=None): # Question 3 et 4
+def affiche_jetons(j, bonus_plateau=None):
     if bonus_plateau is None:
         bonus = init_bonus()
     else:
         bonus = bonus_plateau
-        
-    taille = len(j)
-    dico_bonus = {'LD': '°',
-                   'LT': '^',
-                   'MD': '²',
-                   'MT': '*'}
-    # correction : ne pas réinitialiser bonus ici (on utilise le bonus passé)
-    # bonus = init_bonus()
 
-    print("    ", end="")
-    for col in range(1, taille + 1):
-        
-        # nomenclature de colonne
+    marge = " " * TAILLE_MARGE
+    nb_chiffres_max = len(str(TAILLE_PLATEAU))
 
-        if col < 10:
-            print("0" + str(col) + " ", end="")
-        else:
-            print(str(col) + " ", end="")
-    print()
-    print("   " + "|---" * taille + "|")
+    dic_affichage_bonus = {
+                            'LD': '°',
+                            'LT': '^',
+                            'MD': '²',
+                            'MT': '*',
+                          }
 
-    
 
-    for ligne in range(taille):
-        
-        # nomenclature de ligne
+    print(marge, end= " " * nb_chiffres_max + "  ")
+    # On numerote les colonnes.
+    for x in range(1, TAILLE_PLATEAU):
+        nb_chiffres = len(str(x))
+        print("0" * (nb_chiffres_max - nb_chiffres) + str(x), end="  ")
 
-        if ligne + 1 < 10:
-            print("0" + str(ligne + 1) + " ", end="")
-        else:
-            print(str(ligne + 1) + " ", end="")
+    # On numerote la derniere colonne et on revient a la ligne.
+    print(str(TAILLE_PLATEAU))
 
-        for col in range(taille):
-            case = j[ligne][col]
-            case_b = bonus[ligne][col]
 
-            if case == "":
-                case = " "
-                if case_b in dico_bonus:
-                    case = dico_bonus[case_b]
+    print(marge, end= " " * nb_chiffres_max + " ")
+    print("|---" * (TAILLE_PLATEAU-1) + "|---|")
+
+    indice_ligne = 0
+    for z in range(2*TAILLE_PLATEAU):
+        # Une iteration sur deux, on numerote la ligne et on affiche le jeton pour chaque case.
+        if z % 2 == 0:
+            nb_chiffres = len(str(indice_ligne+1))
+            print(marge + "0"*(nb_chiffres_max - nb_chiffres) + str(indice_ligne+1), end=" ")
+
+            for x in range(TAILLE_PLATEAU-1):
+                jeton = j[indice_ligne][x]
+                bonus = bonus_plateau[indice_ligne][x]
+                if jeton == "":
+                    affichage_case = " "
+                    if bonus in dic_affichage_bonus:
+                        affichage_case = dic_affichage_bonus[bonus]
+                else:
+                    affichage_case = jeton
+                    if bonus in dic_affichage_bonus:
+                        affichage_case += "*"
+                print("| " + affichage_case, end=" ")
+
+            jeton = j[indice_ligne][TAILLE_PLATEAU-1]
+            bonus = bonus_plateau[indice_ligne][TAILLE_PLATEAU-1]
+            if jeton == "":
+                affichage_case = " "
+                if bonus in dic_affichage_bonus:
+                    affichage_case = dic_affichage_bonus[bonus]
             else:
-                if case_b != "":
-                    case += "*"
-           
-            if len(case) == 1:   #pour eviter que le tableau se deforme a cause de la diff de taille
-                case += " "
+                affichage_case = jeton
+                if bonus in dic_affichage_bonus:
+                    affichage_case += "*"
+            print("| " + affichage_case + " |")
 
-            # affichage de la case
-            print("| " + case, end="")
+            indice_ligne += 1
+        else:
+            print(marge, end= " " * nb_chiffres_max + " ")
+            print("|---" * (TAILLE_PLATEAU-1) + "|---|")
 
-        print("|")  
-        print("   " + "|---" * taille + "|")
-
-j = init_jetons()
-affiche_jetons(j,bonus_plateau=None) 
 
 
 def plateau():  # Question 5
@@ -173,6 +180,7 @@ def plateau():  # Question 5
 # PARTIE 2
 
 def init_pioche_alea(): # Question 7 
+# C'est la première version de la fonction qui gère la construction aléatoire de la pioche du scrabble.
 
     l1=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 
@@ -183,22 +191,27 @@ def init_pioche_alea(): # Question 7
     # on remplie aléatoirement jusqu'à 100 jetons
     
     for i in range(0,72):
-        x=random.randint(0,26)
+        x=random.randrange(0,26)
         P.append(l1[x])
     return P
-sac2=init_pioche_alea() # Question 8
 
-def piocher(x, sac):
-    L = []
-    for ind in range(0, x):
-        if len(sac) == 0:
-            return L
-        p = random.randrange(len(sac))
-        L.append(sac.pop(p))
-    return L
+sac2=init_pioche_alea() 
+
+    
+def piocher(x, sac):# Question 8
+# Cette fonction permet au joueur de piocher un nombre x de jetons dans le sac
+    
+    jetons = []
+    for i in range(x):
+        j = random.randint(0, len(sac)-1)
+        jetons.append(sac[j])
+        sac.pop(j)  # On retire le jeton du sac afin qu'il ne puisse plus etre tire a nouveau
+    return jetons
 
 
-def completer_main(main, sac): # Question 9
+def completer_main(main, sac): # Question 9 
+# Cette fonction permet au joueur de completer sa main une fois certains de ses jetons poser
+    
     cm=7-len(main)
     if cm <= 0:
         return main
@@ -212,7 +225,9 @@ def completer_main(main, sac): # Question 9
     return main
 
 
-def echanger(jetons, main, sac): # Question 10
+def echanger(jetons, main, sac): # Question 10 
+# Cette fonction permet au joueur d'echanger certain jetons qu'il a en main
+    
     R = True
     # on enleve les jetons de la main 
     jetons_retires = []
@@ -221,9 +236,8 @@ def echanger(jetons, main, sac): # Question 10
             main.remove(x)
             jetons_retires.append(x)
 
-    # on remet les jetons retirés dans le sac et on mélange
+    # on remet les jetons retirés dans le sac
     sac.extend(jetons_retires)
-    random.shuffle(sac)
 
     main2 = completer_main (main, sac)
     if len(main2)<7:
@@ -236,6 +250,8 @@ def echanger(jetons, main, sac): # Question 10
 
 
 def sim_partie(): # Question 11
+# Cette fonction simule un bout de partie de scabble dans laquelle les joueurs obtienne une pioche et font des échanges
+    
     J1=piocher(7, sac2)      
     print("J1 = ",J1)
     print()
@@ -279,6 +295,8 @@ def sim_partie(): # Question 11
 # PARTIE 3
 
 def select_mot_initiale(motsfr,let): # Question 13
+# Cette fonction crée une liste vide puis regarde dans motsfr et ajoute a la liste créer les mots commençant par let.
+    
     l=[]
     for i in motsfr:
         if i[0]==let:
@@ -287,6 +305,8 @@ def select_mot_initiale(motsfr,let): # Question 13
 
 
 def select_mot_longueur(motsfr,lgr): # Question 14
+# Cette fonction crée une liste vide puis regarde dans motsfr et ajoute a la liste créer les mots de longueur lgr
+   
     l=[]
     for i in motsfr:
         if len(i)==lgr:
@@ -295,6 +315,8 @@ def select_mot_longueur(motsfr,lgr): # Question 14
 
 
 def mot_jouable(mot,ll,lp):
+# Cette fonction renvoie un booléen indiquant si oui le mot est jouable ou non en fonction de la main ll et des lettres presente lp
+    
     P=True
     jok=ll.count(JOKER)   # on regarde le nombre de joker
     lettre = ll.copy()  # pour pas modifier ll
@@ -316,6 +338,8 @@ def mot_jouable(mot,ll,lp):
 
 
 def mot_jouables(motsfr,ll,lp): 
+# Cette fonction  renvoie une liste de mot jouables determinés avec mot_jouable(mot,ll,lp)  
+
     l=[]
     for i in motsfr:
         m=mot_jouable(i,ll,lp)
@@ -325,12 +349,14 @@ def mot_jouables(motsfr,ll,lp):
 
 
 def init_pioche(dico):
-# on crée une liste ou on ajoute la lettre*occurence    
+# Cette fonction est la version final de la fonction qui gère la construction de la pioche du scrabble a l'aide d'un dico
+
+    # on crée une liste ou on ajoute la lettre*occurence    
     l=[]
     for i in dico:
         x=dico[i]['occ']
         l.append(x*i)
-# on crée une deuxième liste pour aoir le format de pioche demandé 
+    # on crée une deuxième liste pour aoir le format de pioche demandé 
     lj=[]
     for i in l:
         for x in i:
@@ -339,6 +365,8 @@ def init_pioche(dico):
 
 
 def mot_jouable2(mot,main): # Question 15 et 17 et 18
+# Cette fonction est la version final de mot_jouable utiliser dans le programme principal
+    
     P=True
     jok = main.count(JOKER)   # on regarde le nombre de joker
     lettre = main.copy()  # pour pas modifier ll
@@ -355,6 +383,8 @@ def mot_jouable2(mot,main): # Question 15 et 17 et 18
 
 
 def mot_jouables2(motsfr,main): # Question 16
+# Cette fonction version final de mot_jouables utiliser dans lle programme principal
+ 
     l=[]
     for i in motsfr:
         m=mot_jouable2(i,main)
@@ -362,12 +392,13 @@ def mot_jouables2(motsfr,main): # Question 16
             l.append(i)
     return l
 
-motsfr = generer_dictfr()
-sac=init_pioche(dico)
+
 
 # PARTIE 4
 
 def valeur_mot(mot,dico): # Question 22
+# Cette fonction  calcul la valeur des mot grace au dico
+
     pt=0
     if len(mot)==7:
         pt=50
@@ -379,7 +410,9 @@ def valeur_mot(mot,dico): # Question 22
     return pt
 
 
-def meilleur_mot(motsfr, ll, dico, lp): # Quetions 23 Et 24 !!!!!!!!!bug avec les joker a corrriger!!!!!!!
+def meilleur_mot(motsfr, ll, dico, lp): # Quetions 23 Et 24 
+# Cette fonction  renvoie une liste des mot jouable valent le plus de points
+
     lmj = mot_jouables(motsfr, ll, lp)
     if not lmj:
         return []
@@ -391,6 +424,8 @@ def meilleur_mot(motsfr, ll, dico, lp): # Quetions 23 Et 24 !!!!!!!!!bug avec le
 # PARTIE 5
 
 def tour_joueur(main,lp=''): # Question 25
+# Cette fonction est la première version de la fonction qui gère le tour des joueurs (échanger/passer/proposer)
+
     print(plateau())
     jetons_e=[]
     coup=input("que voulez vous faire (passer/echanger/proposer )")
@@ -412,19 +447,9 @@ def tour_joueur(main,lp=''): # Question 25
     print('Joueur suivant')
 
 
-def detecte_fin_partie2(sac): # Question 26
-    if len(sac)==0:
-        print('Fin de partie')
-
-def malus(liste_j,dico):
-    pt=0
-    for lettre in liste_j:
-        val=dico[lettre]['val']
-        pt=pt+val
-    return pt
-
 def detecte_fin_partie(sac, joueurs, dico): # Question 26
-    
+# Cette fonction  la fin de la partie taille du sac compte des point et calcul des malus
+
     # On s'assure que la partie soit terminer
     if len(sac)==0:
         print('Fin de partie')
@@ -456,6 +481,8 @@ def detecte_fin_partie(sac, joueurs, dico): # Question 26
         print('Le gagnant est',Gagnant,'avec',joueurs[Gagnant]['score'],'points !!!')
 
 def partie(): # Quetion 28
+# Cette fonction simule une partie un peut plus avancer que simule_partie() 
+# avec la gestion des tour via tour_joueur()
     
     # on crée les joueurs
     nb_joueur=int(input('Nombre de joueur : '))
@@ -493,30 +520,25 @@ def partie(): # Quetion 28
             # Cas ou le joueur a choisie échanger
             elif T!=None and T!=2:
                 print('Voila ta nouvelle pioche',T,)
-    detecte_fin_partie2(sac)
-
-    # Fin de partie le sac est vide
-    liste_score=[]
-    print(nom,'a',joueurs[nom]['score'],'points')
-    for nom in joueurs:
-        liste_score.append(joueurs[nom]['score']-malus(joueurs[nom]['main'],dico))
-    for nom in joueurs:
-        if joueurs[nom]['score']-malus(joueurs[nom]['main'],dico)==max(liste_score):
-            Gagnant=nom       
-    print('Le gagnant est',Gagnant,'avec',joueurs[Gagnant]['score'],'points !!!')
+    detecte_fin_partie(sac, joueurs, dico)
 
 # PARTIE 6
 
 def lire_coords(plat): # Question 29
-    i = int(input('Entrer une coordonnée ligne (1..15) : ')) - 1
-    j = int(input('Entrer une coordonnée colonne (1..15) : ')) - 1
+# Cette fonction renvoie les coordonées des cases vides du plateau
+
+    i = int(input('Entrer une coordonnée ligne (0..14) : '))
+    j = int(input('Entrer une coordonnée colonne (0..14) : '))
     while not (0 <= i < TAILLE_PLATEAU and 0 <= j < TAILLE_PLATEAU) or (plat[i][j] != '' and plat[i][j] not in '²*°^'):
-        i = int(input('Entrer une coordonnée ligne valide (1..15) : ')) - 1
-        j = int(input('Entrer une coordonnée colonne valide (1..15) : ')) - 1
+        i = int(input('Entrer une coordonnée ligne valide (0..14) : '))
+        j = int(input('Entrer une coordonnée colonne valide (0..14) : '))
     return i, j
 
 
 def tester_placement(plat, i, j, direction, mot):  # Question 30
+# Cette fonction vérifie a partir d'une coordonnée si le mot est plaçable
+#  en parcourant les case verticalement ou horizontalement 
+    
     lettres = []
 
     if direction == 'horizontal':
@@ -550,40 +572,46 @@ def tester_placement(plat, i, j, direction, mot):  # Question 30
 
 
 def placer_mot(plat, main, i, j, direction, mot, bonus_plateau):  # Question 31
+# Cette fonction place le mot sur les coordonnée libre verifier a l'avance   
+    
     lettres = tester_placement(plat, i, j, direction, mot)
 
     if lettres != []:
         if direction == 'horizontal':
             for k, l in enumerate(lettres):
                 if '!' in l:    # On regarde si la lettre est deja presente grace a la marque
-                    plat[i][j+k] = l[0]   # on place la lettre sans le !
+                    plat[i][j+k] = plat[i][j+k]+l[0]   # on place la lettre sans la case 
                 elif l in main:
-                    plat[i][j+k] = l
+                    plat[i][j+k] = plat[i][j+k]+l
                     main.remove(l)
                 elif JOKER in main:
                     # le joker prend la valeur de la lettre (on place la lettre en minuscule pour marquer le joker)
-                    plat[i][j+k] = "?"
+                    plat[i][j+k] = plat[i][j+k]+l.lower() # On place le joker en minuscule au cas ou quelqu'un forme un mot a partir de ce joker
                     main.remove(JOKER)
+                P = True
 
         elif direction == 'vertical':
             for k, l in enumerate(lettres):
                 if '!' in l:    
-                    plat[i+k][j] = l[0]
+                    plat[i+k][j] = plat[i+k][j]+l[0]
                 elif l in main:
-                    plat[i+k][j] = l
+                    plat[i+k][j] = plat[i+k][j]+l
                     main.remove(l)
                 elif JOKER in main:
-                    plat[i+k][j] = l.lower() # On place le joker en minuscule au cas ou quelqu'un forme un mot a partir de ce joker
+                    plat[i+k][j] = plat[i+k][j]+l.lower() 
                     main.remove(JOKER)
-
-        return True
+                P = True    
     else:
-        return False
+        P = False
+    return P
 
 
 
 def valeur_mot2(plat, main, i, j, direction, mot, dico, bonus_plateau):  # Question 32
+# Cette fonction est la version final de la fonction qui calcul la valeur des mot grace au dico,
+# prend en compte les bonus appliquer sur les mot et les lettres
     
+    # on initialise les booléen responsable des bonus qui porte sur les mot entier
     BMD = False
     BMT = False
 
@@ -604,9 +632,12 @@ def valeur_mot2(plat, main, i, j, direction, mot, dico, bonus_plateau):  # Quest
             else:
                 lettre_val = l
             val = dico[lettre_val]['val']
-            bonus_case = bonus_plateau[i][j+k] # On teste la case pour voir si c'est un bonus ou non
+            bonus_case = bonus_plateau[i][j+k] 
 
             # Bonus lettre
+             
+            # On teste la case pour voir si c'est un bonus ou non
+            
             if bonus_case == 'LD':
                 val = val*2
                 bonus_plateau[i][j+k] = ''
@@ -632,7 +663,7 @@ def valeur_mot2(plat, main, i, j, direction, mot, dico, bonus_plateau):  # Quest
 
         for k, l in enumerate(mot):
             lettre_plateau = plat[i+k][j]
-             if 'a'<=lettre_plateau<='z' and lettre_plateau != '':
+            if 'a'<=lettre_plateau<='z' and lettre_plateau != '':
                 lettre_val = '?'
             else:
                 lettre_val = l
@@ -665,20 +696,23 @@ def valeur_mot2(plat, main, i, j, direction, mot, dico, bonus_plateau):  # Quest
 # PARTIE 7
 
 def tour_joueur2(plat, main,): #Question 34 
+# Cette fonction est la version final de tour_joueur(plat, main,) 
+# qui cette fois popose ttoute les options et leur conséquence repiocher si on pose un mot...
     
     affiche_jetons(plat, bonus_plateau)
     coup = input("que voulez vous faire (passer/echanger/proposer )")
-    while coup in ['passer','echanger','proposer']:
-         coup=input("que voulez vous faire (passer/echanger/proposer )")
+    while not coup in ['passer','echanger','proposer']:
+        coup=input("que voulez vous faire (passer/echanger/proposer )")
     
     if coup=="echanger":
-        j=input("Entrer les jetons a échanger  ")
+        jetons_e=[]
+        j=input("Entrer les jetons a échanger  ('!' pour arreter) ")
         while j!='!':
-            j=input("Entrer les jetons a échanger  ")
+            j=input("Entrer les jetons a échanger ('!' pour arreter)  ")
             jetons_e.append(j)
         main=echanger (jetons_e, main, sac)
         return main
-    
+
     elif coup=='proposer':
         valeur=0
         i=int(input('entrer les coordonnées de la ligne : ')) 
@@ -689,13 +723,25 @@ def tour_joueur2(plat, main,): #Question 34
         
         direction=input('Entrer une direction (vertical/horizontal) : ')
         while not direction in ['vertical','horizontal']:
-             direction=input('Entrer une direction (vertical/horizontal) : ')
+            direction=input('Entrer une direction (vertical/horizontal) : ')
         print(mot_jouables2(motsfr,main))
         mot=input('Quelle mot proposer vous ? :  ')
 
         # on vérifie d'abord que le mot est jouable avec la main puis on tente le placement
-        while not (mot in mot_jouables2(motsfr,main) and placer_mot(plat,main, i, j, direction, mot, bonus_plateau)):
-           mot=input('Quelle mot proposer vous ? :  ')
+        while not (mot in mot_jouables2(motsfr,main) and tester_placement(plat, i, j, direction, mot) and placer_mot(plat,main, i, j, direction, mot, bonus_plateau)):
+           if not tester_placement(plat, i, j, direction, mot):
+            # si le mot ne se place pas a cause d'un probleme de placement on redemande des coordonnées et une direction au joueur  
+                print('Changer de coordonnées')  
+                i=int(input('entrer les coordonnées de la ligne : ')) 
+                j=int(input('entrer les coordonnées de la colonne : '))
+                while not 0<=i<=14 and not 0<=j<=14:
+                    i=int(input('entrer les coordonnées de la ligne : ')) 
+                    j=int(input('entrer les coordonnées de la colonne : '))
+                direction=input('Entrer une direction (vertical/horizontal) : ')
+                while not direction in ['vertical','horizontal']:
+                    direction=input('Entrer une direction (vertical/horizontal) : ')
+                    print(mot_jouables2(motsfr,main))
+                mot=input('Quelle mot proposer vous ? :  ')
         valeur=valeur_mot2(plat,main, i, j, direction, mot, dico, bonus_plateau) 
         return [valeur,mot] 
     
@@ -715,7 +761,8 @@ for i in range(nb_joueur):
     J=input('Saisissez les nom des joueurs :  ')
     joueurs[J] = {"main": [], "score": 0}
 
-# On crée la pioche
+# On crée la pioche et la liste des mots français
+motsfr = generer_dictfr()
 sac=init_pioche(dico)
 random.shuffle(sac)
     
@@ -734,7 +781,7 @@ while len(sac)>0:
         T=tour_joueur2(plat,joueurs[nom]["main"])
             
         # On vérifie que le joueur a choisie de proposer un mot
-        if len(T)==2 : 
+        if T!= None and len(T)==2 : 
             joueurs[nom]["score"]+=T[0]
             joueurs[nom]["main"]=completer_main (joueurs[nom]["main"], sac)
             print(joueurs[nom],joueurs[nom]["main"],joueurs[nom]["score"])
@@ -746,6 +793,7 @@ while len(sac)>0:
 
 # Fin de partie le sac est vide
 detecte_fin_partie(sac, joueurs, dico)
+
 
 
 
