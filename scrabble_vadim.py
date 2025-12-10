@@ -532,35 +532,38 @@ def tester_placement(plat, i, j, direction, mot):  # Question 30
 
 
 def placer_mot(plat, main, i, j, direction, mot, bonus_plateau):  # Question 31
+# Cette fonction place le mot sur les coordonnée libre verifier a l'avance   
+    
     lettres = tester_placement(plat, i, j, direction, mot)
 
     if lettres != []:
         if direction == 'horizontal':
             for k, l in enumerate(lettres):
                 if '!' in l:    # On regarde si la lettre est deja presente grace a la marque
-                    plat[i][j+k] = l[0]   # on place la lettre sans le !
+                    plat[i][j+k] = plat[i][j+k]+l[0]   # on place la lettre sans la case 
                 elif l in main:
-                    plat[i][j+k] = l
+                    plat[i][j+k] = plat[i][j+k]+l
                     main.remove(l)
                 elif JOKER in main:
                     # le joker prend la valeur de la lettre (on place la lettre en minuscule pour marquer le joker)
-                    plat[i][j+k] = "?"
+                    plat[i][j+k] = plat[i][j+k]+l.lower() # On place le joker en minuscule au cas ou quelqu'un forme un mot a partir de ce joker
                     main.remove(JOKER)
+                P = True
 
         elif direction == 'vertical':
             for k, l in enumerate(lettres):
                 if '!' in l:    
-                    plat[i+k][j] = l[0]
+                    plat[i+k][j] = plat[i+k][j]+l[0]
                 elif l in main:
-                    plat[i+k][j] = l
+                    plat[i+k][j] = plat[i+k][j]+l
                     main.remove(l)
                 elif JOKER in main:
-                    plat[i+k][j] = l.lower() # On place le joker en minuscule au cas ou quelqu'un forme un mot a partir de ce joker
+                    plat[i+k][j] = plat[i+k][j]+l.lower() 
                     main.remove(JOKER)
-
-        return True
+                P = True    
     else:
-        return False
+        P = False
+    return P
 
 
 def valeur_mot2(plat, main, i, j, direction, mot, dico, bonus_plateau):  # Question 32
