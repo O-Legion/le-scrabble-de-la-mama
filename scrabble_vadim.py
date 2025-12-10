@@ -657,41 +657,55 @@ def valeur_mot2(plat, main, i, j, direction, mot, dico, bonus_plateau):  # Quest
 # PARTIE 7
 
 def tour_joueur2(plat, main,): #Question 34 
+# Cette fonction est la version final de tour_joueur(plat, main,) 
+# qui cette fois popose ttoute les options et leur conséquence repiocher si on pose un mot...
     
     affiche_jetons(plat, bonus_plateau)
-    coup = input("Que voulez-vous faire ? (passer/echanger/proposer) ")
-    while coup != "passer" and coup != "echanger" and coup != "proposer":
-         coup = input("Que voulez-vous faire ? (passer/echanger/proposer) ")
+    coup = input("que voulez vous faire (passer/echanger/proposer )")
+    while not coup in ['passer','echanger','proposer']:
+        coup=input("que voulez vous faire (passer/echanger/proposer )")
     
-    jetons_e = []
-    if coup == "echanger":
-        j = input("Entrer les jetons a echanger  ")
-        while j != '!':
-            j = input("Entrer les jetons a echanger  ")
+    if coup=="echanger":
+        jetons_e=[]
+        j=input("Entrer les jetons a échanger  ('!' pour arreter) ")
+        while j!='!':
+            j=input("Entrer les jetons a échanger ('!' pour arreter)  ")
             jetons_e.append(j)
-        main = echanger(jetons_e, main, sac)
+        main=echanger (jetons_e, main, sac)
         return main
-    
-    elif coup == "proposer":
-        valeur = 0
-        i = int(input("entrer les coordonnées de la ligne : ")) 
-        j = int(input("entrer les coordonnées de la colonne : "))
-        while not 0 <= i <= 14 and not 0 <= j <= 14:
-            i = int(input("entrer les coordonnées de la ligne : ")) 
-            j = int(input("entrer les coordonnées de la colonne : "))
+
+    elif coup=='proposer':
+        valeur=0
+        i=int(input('entrer les coordonnées de la ligne : ')) 
+        j=int(input('entrer les coordonnées de la colonne : '))
+        while not 0<=i<=14 and not 0<=j<=14:
+            i=int(input('entrer les coordonnées de la ligne : ')) 
+            j=int(input('entrer les coordonnées de la colonne : '))
         
-        direction = input('Entrer une direction (vertical/horizontal) : ')
+        direction=input('Entrer une direction (vertical/horizontal) : ')
         while not direction in ['vertical','horizontal']:
-             direction = input('Entrer une direction (vertical/horizontal) : ')
-        print(mots_jouables(motsfr, main))
-        mot = input('Quelle mot proposer vous ? :  ')
+            direction=input('Entrer une direction (vertical/horizontal) : ')
+        print(mot_jouables2(motsfr,main))
+        mot=input('Quelle mot proposer vous ? :  ')
 
         # on vérifie d'abord que le mot est jouable avec la main puis on tente le placement
-        while not (mot in mots_jouables(motsfr, main) and placer_mot(plat,main, i, j, direction, mot, bonus_plateau)):
-           mot = input('Quelle mot proposer vous ? :  ')
-        valeur = valeur_mot2(plat, main, i, j, direction, mot, dico, bonus_plateau) 
-        return [valeur, mot] 
-
+        while not (mot in mot_jouables2(motsfr,main) and tester_placement(plat, i, j, direction, mot) and placer_mot(plat,main, i, j, direction, mot, bonus_plateau)):
+           if not tester_placement(plat, i, j, direction, mot):
+            # si le mot ne se place pas a cause d'un probleme de placement on redemande des coordonnées et une direction au joueur  
+                print('Changer de coordonnées')  
+                i=int(input('entrer les coordonnées de la ligne : ')) 
+                j=int(input('entrer les coordonnées de la colonne : '))
+                while not 0<=i<=14 and not 0<=j<=14:
+                    i=int(input('entrer les coordonnées de la ligne : ')) 
+                    j=int(input('entrer les coordonnées de la colonne : '))
+                direction=input('Entrer une direction (vertical/horizontal) : ')
+                while not direction in ['vertical','horizontal']:
+                    direction=input('Entrer une direction (vertical/horizontal) : ')
+                    print(mot_jouables2(motsfr,main))
+                mot=input('Quelle mot proposer vous ? :  ')
+        valeur=valeur_mot2(plat,main, i, j, direction, mot, dico, bonus_plateau) 
+        return [valeur,mot] 
+    
     else:
         print("fin du tour")
     print('Joueur suivant')
