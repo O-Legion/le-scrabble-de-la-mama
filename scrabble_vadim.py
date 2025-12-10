@@ -286,7 +286,7 @@ def mot_jouable(mot, ll, n_let):
             ll_copie.remove(mot[i])
         elif JOKER in ll_copie:
             ll_copie.remove(JOKER)
-        elif c < nb_let:
+        elif c < n_let:
             c = c + 1
         else:
             jouable = False
@@ -647,43 +647,42 @@ def valeur_mot2(plat, main, i, j, direction, mot, dico, bonus_plateau):  # Quest
 def tour_joueur2(plat, main,): #Question 34 
     
     affiche_jetons(plat, bonus_plateau)
-    coup = input("que voulez vous faire (passer/echanger/proposer )")
-    while coup in ['passer','echanger','proposer']:
-         coup=input("que voulez vous faire (passer/echanger/proposer )")
+    coup = input("Que voulez-vous faire ? (passer/echanger/proposer) ")
+    while coup != "passer" and coup != "echanger" and coup != "proposer":
+         coup = input("Que voulez-vous faire ? (passer/echanger/proposer) ")
     
-    if coup=="echanger":
-        j=input("Entrer les jetons a échanger  ")
-        while j!='!':
-            j=input("Entrer les jetons a échanger  ")
+    jetons_e = []
+    if coup == "echanger":
+        j = input("Entrer les jetons a echanger  ")
+        while j != '!':
+            j = input("Entrer les jetons a echanger  ")
             jetons_e.append(j)
-        main=echanger (jetons_e, main, sac)
+        main = echanger(jetons_e, main, sac)
         return main
     
-    elif coup=='proposer':
-        valeur=0
-        i=int(input('entrer les coordonnées de la ligne : ')) 
-        j=int(input('entrer les coordonnées de la colonne : '))
-        while not 0<=i<=14 and not 0<=j<=14:
-            i=int(input('entrer les coordonnées de la ligne : ')) 
-            j=int(input('entrer les coordonnées de la colonne : '))
+    elif coup == "proposer":
+        valeur = 0
+        i = int(input("entrer les coordonnées de la ligne : ")) 
+        j = int(input("entrer les coordonnées de la colonne : "))
+        while not 0 <= i <= 14 and not 0 <= j <= 14:
+            i = int(input("entrer les coordonnées de la ligne : ")) 
+            j = int(input("entrer les coordonnées de la colonne : "))
         
-        direction=input('Entrer une direction (vertical/horizontal) : ')
+        direction = input('Entrer une direction (vertical/horizontal) : ')
         while not direction in ['vertical','horizontal']:
-             direction=input('Entrer une direction (vertical/horizontal) : ')
-        print(mot_jouables2(motsfr,main))
-        mot=input('Quelle mot proposer vous ? :  ')
+             direction = input('Entrer une direction (vertical/horizontal) : ')
+        print(mots_jouables(motsfr, main))
+        mot = input('Quelle mot proposer vous ? :  ')
 
         # on vérifie d'abord que le mot est jouable avec la main puis on tente le placement
-        while not (mot in mot_jouables2(motsfr,main) and placer_mot(plat,main, i, j, direction, mot, bonus_plateau)):
-           mot=input('Quelle mot proposer vous ? :  ')
-        valeur=valeur_mot2(plat,main, i, j, direction, mot, dico, bonus_plateau) 
-        return [valeur,mot] 
-    
+        while not (mot in mots_jouables(motsfr, main) and placer_mot(plat,main, i, j, direction, mot, bonus_plateau)):
+           mot = input('Quelle mot proposer vous ? :  ')
+        valeur = valeur_mot2(plat, main, i, j, direction, mot, dico, bonus_plateau) 
+        return [valeur, mot] 
+
     else:
         print("fin du tour")
     print('Joueur suivant')
-
-
 
 
 
@@ -695,13 +694,13 @@ if __name__ == '__main__':
     # Question 35 PROGRAMME PRINCIPAL
     
     # on crée les joueurs
-    nb_joueur = int(input('Nombre de joueur : '))
+    nb_joueur = int(input('Nombre de joueurs : '))
     while type(nb_joueur) != int and 2 <= nb_joueur <= 14:
-        nb_joueur = int(input('Nombre de joueur : '))
+        nb_joueur = int(input('Nombre de joueurs : '))
     
     joueurs = {}
     for i in range(nb_joueur):
-        J = input('Saisissez les nom des joueurs : ')
+        J = input('Saisissez les noms des joueurs : ')
         joueurs[J] = {"main": [], "score": 0}
     
     # On crée la pioche
@@ -719,8 +718,8 @@ if __name__ == '__main__':
     plat = init_jetons() 
     while len(sac) > 0:
         for nom in joueurs:
-            print('Au tour de ',nom, 'de jouer')
-            T = tour_joueur2(plat,joueurs[nom]["main"])
+            print('Au tour de', nom, 'de jouer')
+            T = tour_joueur2(plat, joueurs[nom]["main"])
                 
             # On vérifie que le joueur a choisie de proposer un mot
             if len(T) == 2: 
