@@ -91,7 +91,12 @@ def init_pioche_alea():
     return li
 
 
-def affiche_jetons(j, table_bonus):
+def affiche_jetons(j, bonus_plateau=None):
+    if bonus_plateau is None:
+        bonus = init_bonus()
+    else:
+        bonus = bonus_plateau
+
     marge = " " * TAILLE_MARGE
     nb_chiffres_max = len(str(TAILLE_PLATEAU))
 
@@ -125,7 +130,7 @@ def affiche_jetons(j, table_bonus):
 
             for x in range(TAILLE_PLATEAU-1):
                 jeton = j[indice_ligne][x]
-                bonus = table_bonus[indice_ligne][x]
+                bonus = bonus_plateau[indice_ligne][x]
                 if jeton == "":
                     affichage_case = " "
                     if bonus in dic_affichage_bonus:
@@ -137,7 +142,7 @@ def affiche_jetons(j, table_bonus):
                 print("| " + affichage_case, end=" ")
 
             jeton = j[indice_ligne][TAILLE_PLATEAU-1]
-            bonus = table_bonus[indice_ligne][TAILLE_PLATEAU-1]
+            bonus = bonus_plateau[indice_ligne][TAILLE_PLATEAU-1]
             if jeton == "":
                 affichage_case = " "
                 if bonus in dic_affichage_bonus:
@@ -152,6 +157,10 @@ def affiche_jetons(j, table_bonus):
         else:
             print(marge, end= " " * nb_chiffres_max + " ")
             print("|---" * (TAILLE_PLATEAU-1) + "|---|")
+
+def plateau():  # Question 5
+    j = init_jetons()
+    return j
 
 
 def piocher(x, sac):
