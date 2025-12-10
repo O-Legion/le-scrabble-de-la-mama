@@ -309,7 +309,33 @@ def mots_jouables(motsfr, ll, n_let=0):
         if mot_jouable(mot, ll, n_let):
             l.append(mot)
     return l
+def mot_jouable2(mot,main): # Question 15 et 17 et 18
+# Cette fonction est la version final de mot_jouable utiliser dans le programme principal
+    
+    P=True
+    jok = main.count(JOKER)   # on regarde le nombre de joker
+    lettre = main.copy()  # pour pas modifier ll
+    mot = list(mot)
+        
+    for i in mot:
+        if i in lettre:
+            lettre.remove(i)  # pour eviter de reutiliser des lettre)
+        elif JOKER in lettre:
+            lettre.remove(JOKER) # on utilise un joker 
+        else:
+            P=False
+    return P
 
+
+def mot_jouables2(motsfr,main): # Question 16
+# Cette fonction version final de mot_jouables utiliser dans lle programme principal
+ 
+    l=[]
+    for i in motsfr:
+        m=mot_jouable2(i,main)
+        if m :
+            l.append(i)
+    return l
 
 # PARTIE 4 : VALEUR D'UN MOT ###################################################
 
