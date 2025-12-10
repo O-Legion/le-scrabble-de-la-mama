@@ -708,9 +708,9 @@ def tour_joueur2(plat, main,): #Question 34
 
 # on crée les joueurs
 nb_joueur=int(input('Nombre de joueur : '))
-while type(nb_joueurs) != int and 2<=nb_joueur<=14 :
+while type(nb_joueur) != int and 2<=nb_joueur<=14 :
     nb_joueur=int(input('Nombre de joueur : '))
-joueurs={}
+joueurs = {}
 for i in range(nb_joueur): 
     J=input('Saisissez les nom des joueurs :  ')
     joueurs[J] = {"main": [], "score": 0}
@@ -746,6 +746,7 @@ while len(sac)>0:
 
 # Fin de partie le sac est vide
 detecte_fin_partie(sac, joueurs, dico)
+
 
 
 
